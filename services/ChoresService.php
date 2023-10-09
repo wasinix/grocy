@@ -187,13 +187,13 @@ class ChoresService extends BaseService
 			}
 		}
 
-		$estimatedExecutionTime = $this->getDatabase()->chores_current()->where('chore_id', $choreId)->min('next_estimated_execution_time');
+		$currentchore = $this->getDatabase()->chores_current()->where('chore_id', $choreId)->fetch();
 		$logRow = $this->getDatabase()->chores_log()->createRow([
 			'chore_id' => $choreId,
 			'tracked_time' => $trackedTime,
 			'done_by_user_id' => $doneBy,
 			'skipped' => BoolToInt($skipped),
-			'estimated_execution_time' => $estimatedExecutionTime
+			'estimated_execution_time' => $currentchore->next_estimated_execution_time
 		]);
 		$logRow->save();
 		$lastInsertId = $this->getDatabase()->lastInsertId();
